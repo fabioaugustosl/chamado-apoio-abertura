@@ -1,20 +1,84 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
   <h1>
-    Welcome to {{ title }}!
+  Abrir chamado NSI!
   </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+  <img width="300" alt="UNA NSI" src="assets/img/logo_una_fundo_branco.jpg">
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
 
+<div class="content" style="padding:10px; margin-top:25%;" *ngIf="chamadoAberto">
+  <div class="alert alert-success" role="alert" style="text-align:center;">
+    Seu chamado foi aberto com sucesso. Aguarde até um momento que o apoio já está a caminho.
+  </div>
+</div>
+
+<div class="content" style="padding:10px;" *ngIf="!chamadoAberto">
+
+    <div class="alert alert-danger" role="alert" *ngIf="msgErro">
+      {{msgErro}}
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <p>Por favor, insira o seu CPF (apenas números): </p>
+        <input myNumberOnly name="inputCPF" placeholder="CPF" maxlength="11"
+          [(ngModel)]="cpfSolicitante" (ngModelChange)="buscarSolicitante()" >
+      </div>
+    </div>
+
+    <div class="row" *ngIf="solicitante">
+      <div class="col-lg-12">
+        <p>Qual o prédio que você está? </p>
+
+        <select [(ngModel)]="agrupamentoSelecionado" (ngModelChange)="montarComboAndares($event)"
+             class="custom-select" id="comboAgrupamento">
+           <option value="" >Selecione ...</option>
+           <option *ngFor="let agrup of agrupamentos" [value]="agrup._id">{{agrup.nome}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="agrupamentoSelecionado">
+      <div class="col-lg-12">
+        <p>Qual o andar? </p>
+
+        <select [(ngModel)]="andarSelecionado" (ngModelChange)="montarComboUnidades($event)"
+            class="custom-select" id="comboAndares">
+           <option value="" >Selecione ...</option>
+           <option *ngFor="let andar of andares" [value]="andar">Andar {{andar}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="andarSelecionado">
+      <div class="col-lg-12">
+        <p>Qual o sala? </p>
+
+        <select [(ngModel)]="unidadeSelecionada"
+            class="custom-select" id="comboUnidade">
+           <option value="" >Selecione ...</option>
+           <option *ngFor="let unidade of unidades" [value]="unidade._id">{{unidade.nome}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="unidadeSelecionada">
+      <div class="col-lg-12">
+        <p>Qual o motivo de sua solicitação? </p>
+
+        <select [(ngModel)]="categoriaSelecionada"
+            class="custom-select" id="comboCategoria">
+           <option value="" >Selecione ...</option>
+           <option *ngFor="let categoria of categorias" [value]="categoria._id">{{categoria.nome}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="categoriaSelecionada">
+      <div class="col-lg-12" style="padding:10px; text-align:center;">
+        <button type="button" class="btn btn-primary" (click)="abrirChamado()" >Abrir chamado</button>
+      </div>
+    </div>
+
+
+</div>
