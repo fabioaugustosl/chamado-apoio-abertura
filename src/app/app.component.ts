@@ -2,17 +2,18 @@ import { Component } from '@angular/core';
 import { Observable, Subject,Subscription, pipe } from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
-
 import { AgrupamentoService } from './services/agrupamento.service';
 import { UnidadeService } from './services/unidade.service';
 import { CategoriaService } from './services/categoria.service';
 import { SolicitanteService } from './services/solicitante.service';
+import { ChamadoService } from './services/chamado.service';
 
 import { Agrupamento } from './entidades/agrupamento';
 import { Unidade } from './entidades/unidade';
 import { CategoriaAtendimento } from './entidades/categoria-atendimento';
 import { Chamado } from './entidades/chamado';
 import { SolicitanteAutorizado } from './entidades/solicitante-autorizado';
+
 
 
 @Component({
@@ -24,11 +25,6 @@ export class AppComponent {
   dono = 'una';
   msgErro = '';
   chamadoAberto = false;
-
-  servicoAgrupamento: AgrupamentoService;
-  servicoUnidade : UnidadeService;
-  servicoCategoria : CategoriaService;
-  servicoSolicitante : SolicitanteService;
 
   private agrupamentos:Agrupamento[]=[];
   agrupamentoSelecionado: string;
@@ -46,16 +42,12 @@ export class AppComponent {
   solicitante: SolicitanteAutorizado;
 
 
-  constructor(public agrupamentoService: AgrupamentoService
-              , public unidadeService: UnidadeService
-              , public categoriaService : CategoriaService
-              , public solicitanteService : SolicitanteService
+  constructor(private servicoAgrupamento: AgrupamentoService
+              , private servicoUnidade: UnidadeService
+              , private servicoCategoria : CategoriaService
+              , private servicoSolicitante : SolicitanteService
+              , private servicoChamado : ChamadoService
               ) {
-     // serviços
-     this.servicoAgrupamento = agrupamentoService;
-     this.servicoUnidade = unidadeService;
-     this.servicoCategoria = categoriaService;
-     this.servicoSolicitante = solicitanteService;
 
      // recupera os agrupamentos
      this.servicoAgrupamento.listarAgrupamento(this.dono)
@@ -81,10 +73,15 @@ export class AppComponent {
 
 
   ngOnInit() {
+    this.msgErro = '';
+    this.chamadoAberto = false;
   }
 
 
   buscarSolicitante(){
+    this.msgErro = '';
+    this.chamadoAberto = false;
+
     if(this.cpfSolicitante.length == 11){
       this.servicoSolicitante.recuperarSolicitante(this.cpfSolicitante)
         .subscribe((data) => {
@@ -163,12 +160,12 @@ export class AppComponent {
   abrirChamado(){
 
     let agrup = this.recuperarAgrupamento(this.agrupamentoSelecionado);
-
     let categ = this.recuperarCategoria(this.categoriaSelecionada);
     let unid = this.recuperarUnidade(this.unidadeSelecionada);
+
     let chamado = new Chamado();
     chamado.dono = this.dono;
-    chamado.cpfSolicitante = '014';
+    chamado.cpfSolicitante = this.cpfSolicitante;
     chamado.idCategoria = this.categoriaSelecionada;
     chamado.nomeCategoria = categ.nome;
     chamado.idUnidade = this.unidadeSelecionada;
@@ -176,7 +173,14 @@ export class AppComponent {
     chamado.nomeAgrupamento = agrup.nome ;
 
     console.log('CHAMADO: ', chamado);
-    this.chamadoAberto = true;
+    //this.chamadoAberto = true;
+
+    this.servicoChamado.criarChamado(chamado).subscribe(
+      (data) => {
+        this.chamadoAberto = true;
+      }
+      ,(error) => { console.log(error); this.msgErro = error.error; }
+    );
   }
 
 
