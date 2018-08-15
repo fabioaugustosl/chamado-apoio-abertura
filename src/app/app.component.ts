@@ -169,6 +169,7 @@ export class AppComponent {
     let chamado = new Chamado();
     chamado.dono = this.dono;
     chamado.cpfSolicitante = this.cpfSolicitante;
+    chamado.nomeSolicitante = this.solicitante.nome;
     chamado.idCategoria = this.categoriaSelecionada;
     chamado.nomeCategoria = categ.nome;
     chamado.idUnidade = this.unidadeSelecionada;

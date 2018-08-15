@@ -6,6 +6,7 @@ export class Chamado {
 	nomeRegiao: string;
   idSolicitante: string;
 	cpfSolicitante: string;
+  nomeSolicitante : string;
   idUnidade: string;
   nomeUnidade: string;
   nomeAgrupamento: string;
