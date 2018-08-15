@@ -22,7 +22,7 @@ import { SolicitanteAutorizado } from './entidades/solicitante-autorizado';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  dono = 'una';
+  dono = '';
   msgErro = '';
   chamadoAberto = false;
 
@@ -48,27 +48,6 @@ export class AppComponent {
               , private servicoSolicitante : SolicitanteService
               , private servicoChamado : ChamadoService
               ) {
-
-     // recupera os agrupamentos
-     this.servicoAgrupamento.listarAgrupamento(this.dono)
-      .subscribe((data) => {
-          this.agrupamentos = [];
-          if(data){
-            for (let i=0; i < data.length; i++) {
-              this.agrupamentos.push(new Agrupamento(data[i]._id, data[i].dono, data[i].idEmpresa, data[i].nome, data[i].nomeEmpresa, data[i].qtdAndares));
-            }
-          }
-     });
-
-     // recupera as categorias
-    this.servicoCategoria.listarCategorias(this.dono).subscribe((data) => {
-       this.categorias =[];
-       if(data){
-          for (let i=0; i <data.length; i++) {
-            this.categorias.push(new CategoriaAtendimento(data[i]._id, data[i].dono, data[i].codigo, data[i].nome));
-          }
-       }
-     });
   }
 
 
@@ -77,6 +56,28 @@ export class AppComponent {
     this.chamadoAberto = false;
   }
 
+  buscarCombosPorDono(){
+    // recupera os agrupamentos
+    this.servicoAgrupamento.listarAgrupamento(this.dono)
+     .subscribe((data) => {
+         this.agrupamentos = [];
+         if(data){
+           for (let i=0; i < data.length; i++) {
+             this.agrupamentos.push(new Agrupamento(data[i]._id, data[i].dono, data[i].idEmpresa, data[i].nome, data[i].nomeEmpresa, data[i].qtdAndares));
+           }
+         }
+    });
+
+    // recupera as categorias
+   this.servicoCategoria.listarCategorias(this.dono).subscribe((data) => {
+      this.categorias =[];
+      if(data){
+         for (let i=0; i <data.length; i++) {
+           this.categorias.push(new CategoriaAtendimento(data[i]._id, data[i].dono, data[i].codigo, data[i].nome));
+         }
+      }
+    });
+  }
 
   buscarSolicitante(){
     this.msgErro = '';
@@ -89,8 +90,10 @@ export class AppComponent {
           if(data && data.length > 0){
             this.solicitante = new SolicitanteAutorizado(data[0]._id, data[0].dono,
                                                       data[0].celular, data[0].cpf,
-                                                    data[0].nome, data[0].email )
+                                                    data[0].nome, data[0].email );
+            this.dono = data[0].dono;
             this.msgErro = '';
+            this.buscarCombosPorDono();
           } else {
             this.msgErro = "Você não está autorizado a abrir chamado para NSI.";
           }
@@ -109,7 +112,8 @@ export class AppComponent {
     }
   }
 
-   recuperarAgrupamento(idAgrupamento){
+
+  recuperarAgrupamento(idAgrupamento){
     for (var i = 0; i < this.agrupamentos.length; i++) {
       let a = this.agrupamentos[i];
       if(a._id == this.agrupamentoSelecionado){
@@ -120,7 +124,6 @@ export class AppComponent {
 
 
   montarComboUnidades(andar){
-
     this.servicoUnidade.listarUnidades(this.dono, this.agrupamentoSelecionado, this.andarSelecionado)
       .subscribe((data) => {
         //console.log('Unidades: ', data);
@@ -172,11 +175,12 @@ export class AppComponent {
     chamado.nomeUnidade = unid.nome;
     chamado.nomeAgrupamento = agrup.nome ;
 
-    console.log('CHAMADO: ', chamado);
+    //console.log('CHAMADO: ', chamado);
     //this.chamadoAberto = true;
 
     this.servicoChamado.criarChamado(chamado).subscribe(
       (data) => {
+        //console.log('Callback criar chamado ',data);
         this.chamadoAberto = true;
       }
       ,(error) => { console.log(error); this.msgErro = error.error; }

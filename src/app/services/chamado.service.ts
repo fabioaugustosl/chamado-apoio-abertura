@@ -17,10 +17,12 @@ const httpOptions = {
 export class ChamadoService {
 
   private apiURL = 'http://52.13.195.71:3000/api/chamado/v1/';
+  //private apiURL = 'http://localhost:3000/api/chamado/v1/';
 
   constructor(private http: HttpClient) { }
 
   criarChamado(chamado: Chamado){
       return this.http.post(this.apiURL, chamado, httpOptions);
   }
+
 }

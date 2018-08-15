@@ -3,10 +3,10 @@
   <h1>
   Abrir chamado NSI!
   </h1>
-  <img width="300" alt="UNA NSI" src="assets/img/logo_una_fundo_branco.jpg">
+  <img width="300" alt="UNA NSI" src="assets/img/logo_una_fundo_branco.png">
 </div>
 
-<div class="content" style="padding:10px; margin-top:25%;" *ngIf="chamadoAberto">
+<div class="content" style="padding:10px; margin-top:18%;" *ngIf="chamadoAberto">
   <div class="alert alert-success" role="alert" style="text-align:center;">
     Seu chamado foi aberto com sucesso. Aguarde até um momento que o apoio já está a caminho.
   </div>
@@ -22,12 +22,13 @@
       <div class="col-lg-12">
         <p>Por favor, insira o seu CPF (apenas números): </p>
         <input myNumberOnly name="inputCPF" placeholder="CPF" maxlength="11"
-          [(ngModel)]="cpfSolicitante" (ngModelChange)="buscarSolicitante()" >
+          [(ngModel)]="cpfSolicitante"  >
+        <button type="button" class="btn btn-primary" (click)="buscarSolicitante()" >OK</button>
       </div>
     </div>
 
     <div class="row" *ngIf="solicitante">
-      <div class="col-lg-12">
+      <div class="col-sm-12 col-md-4 col-lg-4">
         <p>Qual o prédio que você está? </p>
 
         <select [(ngModel)]="agrupamentoSelecionado" (ngModelChange)="montarComboAndares($event)"
@@ -36,10 +37,8 @@
            <option *ngFor="let agrup of agrupamentos" [value]="agrup._id">{{agrup.nome}}</option>
         </select>
       </div>
-    </div>
 
-    <div class="row" *ngIf="agrupamentoSelecionado">
-      <div class="col-lg-12">
+      <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="agrupamentoSelecionado">
         <p>Qual o andar? </p>
 
         <select [(ngModel)]="andarSelecionado" (ngModelChange)="montarComboUnidades($event)"
@@ -48,10 +47,8 @@
            <option *ngFor="let andar of andares" [value]="andar">Andar {{andar}}</option>
         </select>
       </div>
-    </div>
 
-    <div class="row" *ngIf="andarSelecionado">
-      <div class="col-lg-12">
+      <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="andarSelecionado">
         <p>Qual o sala? </p>
 
         <select [(ngModel)]="unidadeSelecionada"
